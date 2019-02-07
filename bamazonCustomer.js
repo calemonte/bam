@@ -29,6 +29,7 @@ function start() {
         verticalLayout: 'default'
     })));
     console.log(gradient.instagram("Serving customers since 2019\n"));
+    
     inquirer.prompt({
         name: "main",
         type: "list",
@@ -131,5 +132,5 @@ function fulfillRequest(chosenItem, unitsRequested) {
             
             setTimeout(start, 1000);
         }
-    )
+    );
 }
