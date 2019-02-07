@@ -5,7 +5,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const keys = require("./keys");
 const gradient = require('gradient-string'); // String gradient colorizer package.
-const figlet = require("figlet"); // Implements the FIGfont spec.
+const figlet = require("figlet"); // Implements the FIGfont spec for displaying cool ASCII art.
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
     database: "bamazon"
 });
 
-// Establish a connection to the MySQL server and SQL database, execute callback.
+// Establish a connection to the MySQL server and SQL database, then execute start() callback.
 connection.connect(function(err) { 
     if (err) throw err;
     start();
@@ -33,17 +33,12 @@ function start() {
         name: "main",
         type: "list",
         message: "What would you like to do?",
-        choices: ["Purchase products", "View order history", "Exit"]
+        choices: ["Purchase products", "Exit"]
     }).then(function(inquirerResponse) {
         
         switch (inquirerResponse.main) {
             case "Purchase products":
                 offerAvailableItems();
-                break;
-            case "View order history":
-                console.log("This will display order history");
-                connection.end();
-                process.exit();
                 break;
             case "Exit":
                 console.log("Thanks for shopping with Bamazon!");
@@ -90,8 +85,6 @@ function requestUnits(inquirerResponse, results) {
             chosenItem = results[i];
         }
     }
-
-    // console.log(chosenItem);
 
     inquirer.prompt({
         name: "unitsRequested",
