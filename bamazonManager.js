@@ -66,24 +66,7 @@ function viewProducts() {
     connection.query("SELECT * FROM products", function(error, results) {
         if (error) throw error;
 
-        let header = returnTableHeader();
-        
-        let rows = [];
-        results.forEach(item => {
-            rows.push([item.id, item.productName, item.departmentName, "$"+item.price, item.stockQuantity]);
-        });
-
-        const t1 = Table(header, rows, {
-            borderStyle : 1,
-            borderColor : "blue",
-            paddingBottom : 0,
-            headerAlign : "center",
-            align : "center",
-            color : "white",
-            truncate: "..."
-        });
-
-        console.log(t1.render());
+        renderTable(results);
        
         console.log("Sending you to the main menu...");
         setTimeout(start, 1000);
@@ -91,8 +74,14 @@ function viewProducts() {
 }
 
 function viewLowInventory() {
-    console.log("Viewing low inventory!");
-    start();
+    connection.query("SELECT * FROM products WHERE stockQuantity < 5", function(error, results) {
+        if (error) throw error;
+
+        renderTable(results);
+       
+        console.log("Sending you to the main menu...");
+        setTimeout(start, 1000);
+    });
 }
 
 function addToInventory() {
@@ -105,12 +94,14 @@ function addNewProduct() {
     start();
 }
 
-function returnTableHeader() {
+// Function for rendering a command line table based on the results of the SQL query.
+function renderTable(results) {
+
     const header = [
         {
             value: "ID",
             headerColor: "cyan",
-            color: "white",
+            color: "cyan",
             align: "center"
         }, {
             value: "Product Name",
@@ -134,5 +125,21 @@ function returnTableHeader() {
             align: "center"
         }
     ];
-    return header;
+        
+    let rows = [];
+    results.forEach(item => {
+        rows.push([item.id, item.productName, item.departmentName, "$"+item.price, item.stockQuantity]);
+    });
+
+    const t1 = Table(header, rows, {
+        borderStyle : 1,
+        borderColor : "blue",
+        paddingBottom : 0,
+        headerAlign : "center",
+        align : "center",
+        color : "white",
+        truncate: "..."
+    });
+
+    console.log(t1.render());
 }
