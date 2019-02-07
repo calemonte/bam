@@ -29,7 +29,7 @@ function start() {
         horizontalLayout: 'default',
         verticalLayout: 'default'
     })));
-    console.log(gradient.instagram("Welcome to the backend Manager interface!\n"));
+    console.log(gradient.instagram("Welcome to the MANAGER interface!\n"));
 
     inquirer.prompt({
         name: "main",
@@ -121,7 +121,7 @@ function addToInventory() {
         .then(function(inquirerResponse) {
             const selectedItem = inquirerResponse.selectedItem;
             const inventoryIncrease = inquirerResponse.amount;
-            // console.log(selectedItem, inventoryIncrease);
+        
             postNewInventory(selectedItem, inventoryIncrease);
         })
         .catch(error => { return console.log(error) } );
@@ -156,8 +156,64 @@ function postNewInventory(selectedItem, inventoryIncrease) {
 }
 
 function addNewProduct() {
-    console.log("Adding new product!");
-    start();
+
+    connection.query("SELECT departmentName FROM products", function(error, results) {
+        if (error) throw error;
+
+        inquirer.prompt([
+            {
+                name: "newItemName",
+                type: "input",
+                message: "Enter the name of the new product"
+            }, {
+                name: "departmentName",
+                type: "list",
+                message: "What department does this fall under?",
+                choices: () => {
+                    let output = [];
+                    for (let i = 0; i < results.length; i++) {
+                        if (!output.includes(results[i].departmentName)) {
+                            output.push(results[i].departmentName);
+                        }
+                    }
+                    return output;
+                }
+            }, {
+                name: "newItemPrice",
+                type: "input",
+                message: "Enter the price of the new product",
+                validate: function(value) {
+                    const pass = value.match(/^[0-9]+(\.[0-9]{1,2})?$/);
+                    if (pass) return true;
+                    return "Please enter a valid (non-negative) decimal greater than 0."
+                }
+            }, {
+                name: "newItemStock",
+                type: "input",
+                message: "Enter the inital inventory of the new product",
+                validate: function(value) {
+                    const pass = value.match(/^[0-9]\d*$/);
+                    if (pass) return true;
+                    return "Please enter a valid (non-negative) integer."
+                }
+            }
+        ])
+        .then(function(inquirerResponse) {
+            connection.query("INSERT INTO products SET ?",
+                {
+                    productName: inquirerResponse.newItemName,
+                    departmentName: inquirerResponse.departmentName,
+                    price: parseFloat(inquirerResponse.newItemPrice).toFixed(2),
+                    stockQuantity: inquirerResponse.newItemStock
+                }, function(error) {
+                    if (error) throw error;
+                    console.log("Success! Your new item has been added.");
+                    setTimeout(start, 1000);
+                }
+            );
+        })
+        .catch(error => { return console.log(error) } );
+    });
 }
 
 // Function for rendering a command line table based on the results of the SQL query.
