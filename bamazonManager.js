@@ -24,12 +24,12 @@ connection.connect(function(err) {
 
 // Function for handling the main menu interface.
 function start() {
-    console.log(gradient.instagram(figlet.textSync("BAMAZON", {
+    console.log(gradient.pastel(figlet.textSync("BAMAZON", {
         font: 'Standard',
         horizontalLayout: 'default',
         verticalLayout: 'default'
     })));
-    console.log(gradient.instagram("Welcome to the MANAGER interface!\n"));
+    console.log(gradient.pastel("Welcome to the MANAGER interface!\n"));
 
     inquirer.prompt({
         name: "main",
@@ -206,7 +206,7 @@ function addNewProduct() {
                     stockQuantity: inquirerResponse.newItemStock
                 }, function(error) {
                     if (error) throw error;
-                    console.log("Success! Your new item has been added.");
+                    console.log("Success! Your new item has been added.\n");
                     setTimeout(start, 1000);
                 }
             );
