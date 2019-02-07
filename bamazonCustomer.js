@@ -4,6 +4,8 @@ require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const keys = require("./keys");
+const gradient = require('gradient-string'); // String gradient colorizer package.
+const figlet = require("figlet"); // Implements the FIGfont spec.
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -19,9 +21,43 @@ connection.connect(function(err) {
     start();
 });
 
-// Function displays list of available products drawn from the SQL database's products table. Allows user to select an item, the data for which is then passed to the requestUnits() function.
+// Function for handling the main menu interface.
 function start() {
+    console.log(gradient.instagram(figlet.textSync("BAMAZON", {
+        font: 'Standard',
+        horizontalLayout: 'default',
+        verticalLayout: 'default'
+    })));
+    console.log(gradient.instagram("Serving customers since 2019\n"));
+    inquirer.prompt({
+        name: "main",
+        type: "list",
+        message: "What would you like to do?",
+        choices: ["Purchase products", "View order history", "Exit"]
+    }).then(function(inquirerResponse) {
+        
+        switch (inquirerResponse.main) {
+            case "Purchase products":
+                offerAvailableItems();
+                break;
+            case "View order history":
+                console.log("This will display order history");
+                connection.end();
+                process.exit();
+                break;
+            case "Exit":
+                console.log("Thanks for shopping with Bamazon!");
+                connection.end();
+                process.exit();
+            default:
+                break;
+        }
 
+    }).catch(error => { return console.log(error) } );
+}
+
+// Function displays list of available products drawn from the SQL database's products table. Allows user to select an item, the data for which is then passed to the requestUnits() function.
+function offerAvailableItems() {
     connection.query("SELECT id, productName, price, stockQuantity FROM products", function(error, results) {
         if (error) throw error;
 
@@ -97,10 +133,10 @@ function fulfillRequest(chosenItem, unitsRequested) {
             } else {
                 console.log(`\nYou succesfully purchased ${unitsRequested} ${chosenItem.productName} for a total price of $${parseFloat(chosenItem.price * unitsRequested).toFixed(2)}.`);
             }
+
+            console.log("Sending you to the main menu...\n");
             
-            console.log(`Sending you back to the main menu...\n`);
+            setTimeout(start, 1000);
         }
     )
-
-    connection.end();
 }
