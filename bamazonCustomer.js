@@ -13,15 +13,16 @@ const connection = mysql.createConnection({
     database: "bamazon"
 });
 
-// connect to the mysql server and sql database
-connection.connect(function(err) {
+// Establish a connection to the MySQL server and SQL database, execute callback.
+connection.connect(function(err) { 
     if (err) throw err;
     start();
 });
 
+// Function displays list of available products drawn from the SQL database's products table. Allows user to select an item, the data for which is then passed to the requestUnits() function.
 function start() {
 
-    connection.query("SELECT productName, price, stockQuantity FROM products", function(error, results) {
+    connection.query("SELECT id, productName, price, stockQuantity FROM products", function(error, results) {
         if (error) throw error;
 
         inquirer.prompt({
@@ -44,6 +45,7 @@ function start() {
     });
 }
 
+// Function for gathering the amount of units requested by the customer.
 function requestUnits(inquirerResponse, results) {
     let chosenItem;
 
@@ -53,18 +55,52 @@ function requestUnits(inquirerResponse, results) {
         }
     }
 
-    console.log(chosenItem);
+    // console.log(chosenItem);
 
     inquirer.prompt({
         name: "unitsRequested",
         type: "input",
-        message: `How many units of ${chosenItem.productName} would you like? There are currently ${chosenItem.stockQuantity} units available.`
+        message: `How many units of ${chosenItem.productName} would you like? There are currently ${chosenItem.stockQuantity} units available.`,
+        validate: function(value) {
+            const pass = value.match(/^[1-9]\d*$/);
+            if (pass) return true;
+            return "Please enter a valid (non-negative) number greater than 0."
+        }
     })
     .then(function(inquirerResponse) {
-        console.log(inquirerResponse);
-        console.log("The next step is to handle the actual purchase: purchase()");
+        fulfillRequest(chosenItem, inquirerResponse.unitsRequested)
     })
     .catch(error => { return console.log(error) } );
+
+}
+
+function fulfillRequest(chosenItem, unitsRequested) {
+    
+    if (unitsRequested > chosenItem.stockQuantity) {
+        console.log("\nSorry, you've requested more units than are currently in stock. Please try again!\n");
+        return start();
+    }
+
+    connection.query(
+        "UPDATE products SET ? WHERE ?", 
+        [ 
+          {
+            stockQuantity: `${chosenItem.stockQuantity - unitsRequested}`
+          }, {
+            id: chosenItem.id 
+          }
+        ],
+        function(error) {
+            if (error) throw error;
+            if (unitsRequested > 1) {
+                console.log(`\nYou succesfully purchased ${unitsRequested} ${chosenItem.productName}s for a total price of $${parseFloat(chosenItem.price * unitsRequested).toFixed(2)}.`);
+            } else {
+                console.log(`\nYou succesfully purchased ${unitsRequested} ${chosenItem.productName} for a total price of $${parseFloat(chosenItem.price * unitsRequested).toFixed(2)}.`);
+            }
+            
+            console.log(`Sending you back to the main menu...\n`);
+        }
+    )
 
     connection.end();
 }
