@@ -21,11 +21,11 @@ connection.connect(function(err) {
 
 function start() {
 
-    connection.query("SELECT productName, price FROM products", function(error, results) {
+    connection.query("SELECT productName, price, stockQuantity FROM products", function(error, results) {
         if (error) throw error;
 
         inquirer.prompt({
-            name: "itemsForSale",
+            name: "selectedItem",
             type: "list",
             message: "Welcome! Please select one of the products below to make a purchase.",
             choices: () => {
@@ -35,9 +35,36 @@ function start() {
                 }
                 return output;
             }
-        });
+        })
+        .then(function(inquirerResponse) {
+            requestUnits(inquirerResponse, results);
+        })
+        .catch(error => { return console.log(error) } );
 
+    });
+}
+
+function requestUnits(inquirerResponse, results) {
+    let chosenItem;
+
+    for (let i = 0; i < results.length; i++) {
+        if (`${results[i].productName}, $${results[i].price}` === inquirerResponse.selectedItem) {
+            chosenItem = results[i];
+        }
+    }
+
+    console.log(chosenItem);
+
+    inquirer.prompt({
+        name: "unitsRequested",
+        type: "input",
+        message: `How many units of ${chosenItem.productName} would you like? There are currently ${chosenItem.stockQuantity} units available.`
     })
+    .then(function(inquirerResponse) {
+        console.log(inquirerResponse);
+        console.log("The next step is to handle the actual purchase: purchase()");
+    })
+    .catch(error => { return console.log(error) } );
 
     connection.end();
 }
