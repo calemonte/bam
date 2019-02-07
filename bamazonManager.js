@@ -85,8 +85,74 @@ function viewLowInventory() {
 }
 
 function addToInventory() {
-    console.log("Adding to inventory!");
-    start();
+    connection.query("SELECT id, productName, stockQuantity FROM products", function(error, results) {
+        if (error) throw error;
+
+        inquirer.prompt([
+            {
+                name: "selectedItem",
+                type: "list",
+                message: "Select an item to increase its inventory",
+                choices: () => {
+                    let output = [];
+                    for (let i = 0; i < results.length; i++) {
+                        // output.push(`ID: ${results[i].id} | Product Name: ${results[i].productName} | Inventory: ${results[i].stockQuantity}`);
+                        output.push({
+
+                            name: `Product Name: ${results[i].productName} | Inventory: ${results[i].stockQuantity}`,
+
+                            value: [results[i].id, results[i].stockQuantity, results[i].productName]
+
+                        });
+                    }
+                    return output;
+                }
+            }, {
+                name: "amount",
+                type: "input",
+                message: "How many items are you adding to this item's inventory?",
+                validate: function(value) {
+                    const pass = value.match(/^[0-9]\d*$/);
+                    if (pass) return true;
+                    return "Please enter a valid (non-negative) number."
+                }
+            }
+        ])
+        .then(function(inquirerResponse) {
+            const selectedItem = inquirerResponse.selectedItem;
+            const inventoryIncrease = inquirerResponse.amount;
+            // console.log(selectedItem, inventoryIncrease);
+            postNewInventory(selectedItem, inventoryIncrease);
+        })
+        .catch(error => { return console.log(error) } );
+
+    });
+    
+}
+
+function postNewInventory(selectedItem, inventoryIncrease) {
+    const currentID = parseInt(selectedItem[0]);
+    const currentStock = parseInt(selectedItem[1]);
+    const newStock = currentStock + parseInt(inventoryIncrease);
+    const currentProductName = selectedItem[2];
+
+    connection.query("UPDATE products SET ? WHERE ?",
+        [
+            {
+                stockQuantity: newStock
+            },
+            {
+                id: currentID
+            }
+        ],
+        function(error) {
+          if (error) throw error;
+
+          console.log(`Your request was succesfully processed: ${currentProductName}'s inventory increased by ${inventoryIncrease} units. To see the updated inventory, select "View Products for Sale" on the main menu.`);
+
+          start();
+        }
+    );
 }
 
 function addNewProduct() {
