@@ -115,10 +115,11 @@ function fulfillRequest(chosenItem, unitsRequested) {
         "UPDATE products SET ? WHERE ?", 
         [ 
           {
-            stockQuantity: `${chosenItem.stockQuantity - unitsRequested}`
+            stockQuantity: chosenItem.stockQuantity - unitsRequested,
+            productSales: chosenItem.price * unitsRequested 
           }, {
             id: chosenItem.id 
-          }
+          },
         ],
         function(error) {
             if (error) throw error;

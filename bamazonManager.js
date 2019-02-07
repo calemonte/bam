@@ -96,7 +96,6 @@ function addToInventory() {
                 choices: () => {
                     let output = [];
                     for (let i = 0; i < results.length; i++) {
-                        // output.push(`ID: ${results[i].id} | Product Name: ${results[i].productName} | Inventory: ${results[i].stockQuantity}`);
                         output.push({
 
                             name: `Product Name: ${results[i].productName} | Inventory: ${results[i].stockQuantity}`,
