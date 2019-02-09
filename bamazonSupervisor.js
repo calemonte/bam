@@ -56,11 +56,12 @@ function start() {
     }).catch(error => { return console.log(error) } );
 }
 
+// Function that queries the database for information about total product sales, costs, and profits organized by department.
 function viewProductsbyDepartment() {
     let query = "SELECT d.departmentId, d.departmentName, d.overheadCosts AS overhead, SUM(p.productSales) AS productSales ";
     query += "FROM departments AS d LEFT JOIN products AS p ON (d.departmentName = p.departmentName) ";
     query += "GROUP BY d.departmentId, d.departmentName, d.overheadCosts";
-    
+
     connection.query(query, function(error, results) {
         if (error) throw error;
 
@@ -72,6 +73,7 @@ function viewProductsbyDepartment() {
     });
 }
 
+// Function that provides an interface for a supervisor to add a new department to the store.
 function createNewDepartment() {
     inquirer.prompt([
         {
@@ -141,7 +143,8 @@ function renderTable(results) {
             align: "center"
         }
     ];
-        
+    
+    // Generate rows from the database call.
     let rows = [];
     results.forEach(item => {
 
@@ -154,6 +157,7 @@ function renderTable(results) {
         rows.push([item.departmentId, item.departmentName, item.overhead,item.productSales, totalProfit]);
     });
 
+    // Construct the table.
     const t1 = Table(header, rows, {
         borderStyle : 1,
         borderColor : "blue",

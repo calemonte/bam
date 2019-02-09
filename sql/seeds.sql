@@ -1,3 +1,5 @@
+-- This SQL query is used to seed entries into the "products" and "departments" tables.
+
 USE bamazon;
 
 INSERT INTO products (productName, departmentName, price, stockQuantity)
@@ -12,3 +14,8 @@ VALUES
     ("Bluetooth Computer Mouse", "Non-Mystical Goods", 8.99, 250),
     ("Teapot", "Non-Mystical Goods", 19.99, 100),
     ("Coffee Mug", "Non-Mystical Goods", 5.99, 300);
+
+INSERT INTO departments (departmentName, overheadCosts)
+VALUES 
+    ("Mystical Goods", 1000),
+    ("Non-Mystical Goods", 500);

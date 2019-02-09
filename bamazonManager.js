@@ -22,7 +22,7 @@ connection.connect(function(err) {
     start();
 });
 
-// Function for handling the main menu interface.
+// Function for display the main menu interface to the manager.
 function start() {
     console.log(gradient.pastel(figlet.textSync("BAMAZON", {
         font: 'Standard',
@@ -62,6 +62,7 @@ function start() {
     }).catch(error => { return console.log(error) } );
 }
 
+// Function that displays a table of all products for sale in the store, organized by product ID.
 function viewProducts() {
     connection.query("SELECT * FROM products", function(error, results) {
         if (error) throw error;
@@ -73,6 +74,7 @@ function viewProducts() {
     });
 }
 
+// Function that displays a table of items with less than 5 units of inventory.
 function viewLowInventory() {
     connection.query("SELECT * FROM products WHERE stockQuantity < 5", function(error, results) {
         if (error) throw error;
@@ -84,6 +86,7 @@ function viewLowInventory() {
     });
 }
 
+// Function that provides an interface for a manager to add more units of inventory for a particular item.
 function addToInventory() {
     connection.query("SELECT id, productName, stockQuantity FROM products", function(error, results) {
         if (error) throw error;
@@ -129,6 +132,7 @@ function addToInventory() {
     
 }
 
+// Helper function for posting a selected item and inventory increase to the database from the addToInventory() function.
 function postNewInventory(selectedItem, inventoryIncrease) {
     const currentID = parseInt(selectedItem[0]);
     const currentStock = parseInt(selectedItem[1]);
@@ -154,6 +158,7 @@ function postNewInventory(selectedItem, inventoryIncrease) {
     );
 }
 
+// Function that provides an interface for a manager to add a new product for sale.
 function addNewProduct() {
 
     connection.query("SELECT departmentName FROM departments", function(error, results) {
@@ -246,12 +251,14 @@ function renderTable(results) {
             align: "center"
         }
     ];
-        
+    
+    // Generate rows from the database call.
     let rows = [];
     results.forEach(item => {
         rows.push([item.id, item.productName, item.departmentName, "$"+item.price, item.stockQuantity]);
     });
 
+    // Construct the table.
     const t1 = Table(header, rows, {
         borderStyle : 1,
         borderColor : "blue",

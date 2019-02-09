@@ -21,7 +21,7 @@ connection.connect(function(err) {
     start();
 });
 
-// Function for handling the main menu interface.
+// Function for display the main menu interface for customers.
 function start() {
     console.log(gradient.instagram(figlet.textSync("BAMAZON", {
         font: 'Standard',
@@ -104,6 +104,7 @@ function requestUnits(inquirerResponse, results) {
 
 }
 
+// Helper function that handles the database update request in the requestUnits() function.
 function fulfillRequest(chosenItem, unitsRequested) {
     
     if (unitsRequested > chosenItem.stockQuantity) {
