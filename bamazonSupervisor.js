@@ -57,7 +57,11 @@ function start() {
 }
 
 function viewProductsbyDepartment() {
-    connection.query("SELECT d.departmentId, d.departmentName, d.overheadCosts AS overhead, SUM(p.productSales) AS productSales FROM departments AS d LEFT JOIN products AS p ON (d.departmentName = p.departmentName) GROUP BY d.departmentId, d.departmentName, d.overheadCosts", function(error, results) {
+    let query = "SELECT d.departmentId, d.departmentName, d.overheadCosts AS overhead, SUM(p.productSales) AS productSales ";
+    query += "FROM departments AS d LEFT JOIN products AS p ON (d.departmentName = p.departmentName) ";
+    query += "GROUP BY d.departmentId, d.departmentName, d.overheadCosts";
+    
+    connection.query(query, function(error, results) {
         if (error) throw error;
 
         // console.log(results);
