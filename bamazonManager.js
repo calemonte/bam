@@ -156,7 +156,7 @@ function postNewInventory(selectedItem, inventoryIncrease) {
 
 function addNewProduct() {
 
-    connection.query("SELECT departmentName FROM products", function(error, results) {
+    connection.query("SELECT departmentName FROM departments", function(error, results) {
         if (error) throw error;
 
         inquirer.prompt([

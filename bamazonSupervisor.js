@@ -57,9 +57,10 @@ function start() {
 }
 
 function viewProductsbyDepartment() {
-    connection.query("SELECT * FROM departments", function(error, results) {
+    connection.query("SELECT d.departmentId, d.departmentName, d.overheadCosts AS overhead, SUM(p.productSales) AS productSales FROM departments AS d LEFT JOIN products AS p ON (d.departmentName = p.departmentName) GROUP BY d.departmentId, d.departmentName, d.overheadCosts", function(error, results) {
         if (error) throw error;
 
+        // console.log(results);
         renderTable(results);
        
         console.log("Sending you to the main menu...");
@@ -110,14 +111,9 @@ function renderTable(results) {
 
     const header = [
         {
-            value: "ID",
+            value: "Department ID",
             headerColor: "cyan",
             color: "cyan",
-            align: "center"
-        }, {
-            value: "Product Name",
-            headerColor: "cyan",
-            color: "white",
             align: "center"
         }, {
             value: "Department Name",
@@ -125,12 +121,17 @@ function renderTable(results) {
             color: "white",
             align: "center"
         }, {
-            value: "Item Price",
+            value: "Overhead Costs",
+            headerColor: "cyan",
+            color: "white",
+            align: "center"
+        }, {
+            value: "Product Sales",
             headerColor: "cyan",
             color: "white",
             align: "center",
         }, {
-            value: "Item Inventory",
+            value: "Total Profit",
             headerColor: "cyan",
             color: "white",
             align: "center"
@@ -139,7 +140,14 @@ function renderTable(results) {
         
     let rows = [];
     results.forEach(item => {
-        rows.push([item.id, item.productName, item.departmentName, "$"+item.price, item.stockQuantity]);
+
+        if (!item.productSales) {
+            item.productSales = 0;
+        }
+
+        let totalProfit = item.productSales - item.overhead;
+
+        rows.push([item.departmentId, item.departmentName, item.overhead,item.productSales, totalProfit]);
     });
 
     const t1 = Table(header, rows, {
