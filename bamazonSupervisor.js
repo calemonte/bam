@@ -148,13 +148,13 @@ function renderTable(results) {
     let rows = [];
     results.forEach(item => {
 
-        if (!item.productSales) {
-            item.productSales = 0;
-        }
+        // if (!item.productSales) {
+        //     item.productSales = 0;
+        // }
 
-        let totalProfit = item.productSales - item.overhead;
+        let totalProfit = (item.productSales - item.overhead).toFixed(2);
 
-        rows.push([item.departmentId, item.departmentName, item.overhead,item.productSales, totalProfit]);
+        rows.push([item.departmentId, item.departmentName, item.overhead, item.productSales || 0, totalProfit]);
     });
 
     // Construct the table.
