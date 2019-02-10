@@ -1,9 +1,9 @@
 # Bamazon
-Bamazon is a trio of command line Node.js applications that allows customers to purchase items (bamazonCustomer.js), managers to view products for sale and replenish inventories (bamazonManager.js), among to other tasks, and supervisors to view gross sales by department and add new departments (bamazonSupervisor.js).
+Bamazon is a trio of command line Node.js applications that allows customers to purchase items (bamazonCustomer.js), managers to view products for sale and replenish inventories (bamazonManager.js), among other tasks, and supervisors to view gross sales by department and add new departments (bamazonSupervisor.js).
 
 ## Install
 
-Clone the repository and then `npm install` the dependencies listed in the `package.json` file after you've changed into the directory.
+Clone the repository and then `npm install` the dependencies listed in `package.json`.
 
 ```
 git clone <this repo>
@@ -13,9 +13,9 @@ npm install
 
 ## How to Use
 
-This is a series of three Node.js CLI applications: bamazonCustomer.js, bamazonManager.js, and bamazonSupervisor.js. Instructions on using each of these applications is included below.
+This is a series of three Node.js CLI applications: bamazonCustomer.js, bamazonManager.js, and bamazonSupervisor.js. Instructions on using each of these applications is included below. For a video demonstration of the application in action, [click here](https://drive.google.com/open?id=14AQaI723BcbhvNPfX2xOOeYRvLoBiq0V).
 
-Before you get started with any of these applications, you will need to start your MySQL server. Once you've fired it up, please enter your personal MySQL database password into a `.env` file in the repo (this file is not included in the repo).
+Before you get started with any of these applications though, you will need to start your MySQL server. Once you've spun up your server,please enter your personal MySQL database password into a `.env` file in the repo (this file is not included in the repo, so you will need to create one).
 
 ```
 MYSQL_SECRET=YOURPASSWORDHERE
@@ -28,7 +28,7 @@ Fire up the Customer app by running:
 ```
 node bamazonCustomer.js
 ```
-You can now "purchase" items using the CLI. Browse your options and pick one (or more that you like), but make sure you don't pick more than the inventory. 
+You can now "purchase" items using the CLI. Browse your options and pick an item to purchase, but make sure you don't pick more units than are in stock. 
 
 ![Screenshot of the Customer interface](/assets/customer.png "Screenshot of the Customer interface.")
 
@@ -52,11 +52,11 @@ Fire up the Supervisor app by running:
 ```
 node bamazonSupervisor.js
 ```
-You can now execute a number of tasks as a "supervisor" of the Bamazon storefront, all of which is reflective of data stored in the MySQL database. A number of the columns represented in the "View Product Sales" option joins together data from the two tables in the database, "products" and "departments."
+You can now execute a number of tasks as a "supervisor" of the Bamazon storefront, all of which is reflective of data stored in the MySQL database. A number of the columns represented in the "View Product Sales" option join together data from the two tables in the database, "products" and "departments."
 
 ![Screenshot of the Supervisor interface](/assets/supervisor.png "Screenshot of the Supervisor interface.")
 
-Making changes here will be reflected in the backend Manager experience, mainly in that it will give managers a new departments to which they can add products.
+Making changes here will be reflected in the backend Manager experience, mainly in that it will give managers new departments to which they can add products.
 
 ## Technologies Used
 - JavaScript
