@@ -1,3 +1,5 @@
+![The "Bamazon" command line interface logo.](./assets/bamazon.png  "The 'Bamazon' command line interface logo")
+
 # Bamazon
 Bamazon is a trio of command line Node.js applications that allows customers to purchase items (bamazonCustomer.js), managers to view products for sale and replenish inventories (bamazonManager.js), among other tasks, and supervisors to view gross sales by department and add new departments (bamazonSupervisor.js).
 
